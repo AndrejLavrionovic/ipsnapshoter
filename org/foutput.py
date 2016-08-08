@@ -60,8 +60,8 @@ class fout:
     inf = os.path.join(self.__pathinstance.getfp(), self.__fls.getfin())
     nmapout = os.path.join(self.__pathinstance.getfp(), self.__fls.getfnmap())
     nmaprun = 'nmap --top-ports 2000 -T4 -iL ' + inf + ' -oX ' + nmapout
-    #nmapscann = subprocess.Popen(nmaprun, shell=True)
-    #nmapscann.wait()
+    nmapscann = subprocess.Popen(nmaprun, shell=True)
+    nmapscann.wait()
     # 2) parse nmap.xml into tree
     os.chdir(self.__pathinstance.getfp())
     tree = ET.parse(nmapout)  # parse xml file into tree
@@ -163,7 +163,7 @@ class fout:
     #print '====> ' + eyewitnessrun
     os.chdir(self.__pathinstance.getcp() + '/EyeWitness')
     print '3.2)==> Scanning...........'
-    #eyewitnessprocess = subprocess.Popen(eyewitnessrun, shell=True)
-    #eyewitnessprocess.wait()
+    eyewitnessprocess = subprocess.Popen(eyewitnessrun, shell=True)
+    eyewitnessprocess.wait()
     print '3.3)==> Scanning is done.'
 
