@@ -38,7 +38,6 @@ class XML_Parser(xml.sax.ContentHandler):
         self.http_ports = self.http_ports + class_cli_obj.add_http_ports
         self.https_ports = self.https_ports + class_cli_obj.add_https_ports
         self.no_dns = class_cli_obj.no_dns
-        self.only_ports = class_cli_obj.only_ports
 
     def startElement(self, tag, attributes):
         # Determine the Scanner being used
@@ -102,52 +101,28 @@ class XML_Parser(xml.sax.ContentHandler):
     def endElement(self, tag):
         if self.masscan or self.nmap:
             if tag == "service":
-                if not self.only_ports:
-                    if (self.system_name is not None) and (self.port_number is not None) and self.port_open:
-                        if self.protocol == "http" or self.protocol == "https":
-                            built_url = self.protocol + "://" + self.system_name + ":" + self.port_number
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                                self.num_urls += 1
-                        elif self.protocol is None and self.port_number in self.http_ports:
-                            built_url = "http://" + self.system_name + ":" + self.port_number
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                                self.num_urls += 1
-                        elif self.protocol is None and self.port_number in self.https_ports:
-                            built_url = "https://" + self.system_name + ":" + self.port_number
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                                self.num_urls += 1
-                        elif self.protocol == "vnc":
-                            if self.system_name not in self.vnc_list:
-                                self.vnc_list.append(self.system_name)
-                        elif self.port_number == "3389":
-                            if self.system_name not in self.rdp_list:
-                                self.rdp_list.append(self.system_name)
-                else:
-                    if (self.system_name is not None) and (self.port_number is not None) and self.port_open and int(self.port_number.encode('utf-8')) in self.only_ports:
-                        if self.protocol == "http" or self.protocol == "https":
-                            built_url = self.protocol + "://" + self.system_name
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                                self.num_urls += 1
-                        elif self.protocol is None and self.port_number in self.http_ports:
-                            built_url = "http://" + self.system_name
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                                self.num_urls += 1
-                        elif self.protocol is None and self.port_number in self.https_ports:
-                            built_url = "https://" + self.system_name
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                                self.num_urls += 1
-                        elif self.protocol == "vnc":
-                            if self.system_name not in self.vnc_list:
-                                self.vnc_list.append(self.system_name)
-                        elif self.port_number == "3389":
-                            if self.system_name not in self.rdp_list:
-                                self.rdp_list.append(self.system_name)
+                if (self.system_name is not None) and (self.port_number is not None) and self.port_open:
+                    if self.protocol == "http" or self.protocol == "https":
+                        built_url = self.protocol + "://" + self.system_name + ":" + self.port_number
+                        if built_url not in self.url_list:
+                            self.url_list.append(built_url)
+                            self.num_urls += 1
+                    elif self.protocol is None and self.port_number in self.http_ports:
+                        built_url = "http://" + self.system_name + ":" + self.port_number
+                        if built_url not in self.url_list:
+                            self.url_list.append(built_url)
+                            self.num_urls += 1
+                    elif self.protocol is None and self.port_number in self.https_ports:
+                        built_url = "https://" + self.system_name + ":" + self.port_number
+                        if built_url not in self.url_list:
+                            self.url_list.append(built_url)
+                            self.num_urls += 1
+                    elif self.protocol == "vnc":
+                        if self.system_name not in self.vnc_list:
+                            self.vnc_list.append(self.system_name)
+                    elif self.port_number == "3389":
+                        if self.system_name not in self.rdp_list:
+                            self.rdp_list.append(self.system_name)
 
                 self.port_number = None
                 self.protocol = None
@@ -172,30 +147,17 @@ class XML_Parser(xml.sax.ContentHandler):
 
         elif self.nessus:
             if tag == "ReportItem":
-                if not self.only_ports:
-                    if (self.system_name is not None) and (self.protocol is not None) and self.service_detection:
-                        if self.protocol == "http" or self.protocol == "https":
-                            built_url = self.protocol + "://" + self.system_name + ":" + self.port_number
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                        elif self.protocol == "vnc":
-                            if self.system_name not in self.vnc_list:
-                                self.vnc_list.append(self.system_name)
-                        elif self.protocol == "rdp":
-                            if self.system_name not in self.rdp_list:
-                                self.rdp_list.append(self.system_name)
-                else:
-                    if (self.system_name is not None) and (self.protocol is not None) and self.service_detection and int(self.port_number.encode('utf-8')) in self.only_ports:
-                        if self.protocol == "http" or self.protocol == "https":
-                            built_url = self.protocol + "://" + self.system_name + ":" + self.port_number
-                            if built_url not in self.url_list:
-                                self.url_list.append(built_url)
-                        elif self.protocol == "vnc":
-                            if self.system_name not in self.vnc_list:
-                                self.vnc_list.append(self.system_name)
-                        elif self.protocol == "rdp":
-                            if self.system_name not in self.rdp_list:
-                                self.rdp_list.append(self.system_name)
+                if (self.system_name is not None) and (self.protocol is not None) and self.service_detection:
+                    if self.protocol == "http" or self.protocol == "https":
+                        built_url = self.protocol + "://" + self.system_name + ":" + self.port_number
+                        if built_url not in self.url_list:
+                            self.url_list.append(built_url)
+                    elif self.protocol == "vnc":
+                        if self.system_name not in self.vnc_list:
+                            self.vnc_list.append(self.system_name)
+                    elif self.protocol == "rdp":
+                        if self.system_name not in self.rdp_list:
+                            self.rdp_list.append(self.system_name)
 
                 self.port_number = None
                 self.protocol = None
@@ -278,38 +240,23 @@ def textfile_parser(file_to_parse, cli_obj):
 
         # else:
         for line in all_urls:
-            line = line.strip()
-            if not cli_obj.only_ports:
-                if line.startswith('http://') or line.startswith('https://'):
-                    urls.append(line)
-                elif line.startswith('rdp://'):
-                    rdp.append(line[6:])
-                elif line.startswith('vnc://'):
-                    vnc.append(line[6:])
-                else:
-                    if cli_obj.rdp:
-                        rdp.append(line)
-                    if cli_obj.vnc:
-                        vnc.append(line)
-                    if cli_obj.web or cli_obj.headless:
-                        if cli_obj.prepend_https:
-                            urls.append("http://" + line)
-                            urls.append("https://" + line)
-                        else:
-                            urls.append(line)
+            if line.startswith('http://') or line.startswith('https://'):
+                urls.append(line)
+            elif line.startswith('rdp://'):
+                rdp.append(line[6:])
+            elif line.startswith('vnc://'):
+                vnc.append(line[6:])
             else:
-                if line.startswith('http://') or line.startswith('https://'):
-                    for port in cli_obj.only_ports:
-                        urls.append(line + ':' + str(port))
-                else:
-                    if cli_obj.web or cli_obj.headless:
-                        if cli_obj.prepend_https:
-                            for port in cli_obj.only_ports:
-                                urls.append("http://" + line + ':' + str(port))
-                                urls.append("https://" + line + ':' + str(port))
-                        else:
-                            for port in cli_obj.only_ports:
-                                urls.append(line + ':' + str(port))
+                if cli_obj.rdp:
+                    rdp.append(line)
+                if cli_obj.vnc:
+                    vnc.append(line)
+                if cli_obj.web or cli_obj.headless:
+                    if cli_obj.prepend_https:
+                        urls.append("http://" + line)
+                        urls.append("https://" + line)
+                    else:
+                        urls.append(line)
 
         return urls, rdp, vnc
 
@@ -683,16 +630,7 @@ def open_file_input(cli_parsed):
     if len(files) > 0:
         print('\n[*] Done! Report written in the {0} folder!').format(
             cli_parsed.d)
-        print 'Would you like to open the report now? [Y/n]',
-        while True:
-            try:
-                response = raw_input().lower()
-                if response is "":
-                    return True
-                else:
-                    return strtobool(response)
-            except ValueError:
-                print "Please respond with y or n",
+        
     else:
         print '[*] No report files found to open, perhaps no hosts were successful'
-        return False
+    return False
