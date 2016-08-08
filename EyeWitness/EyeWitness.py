@@ -136,10 +136,6 @@ def create_cli_parser():
                               type=lambda s:[int(i) for i in s.split(",")],
                               help=("Comma-seperated additional port(s) to assume "
                               "are https (e.g. '8018,8028')"))
-    http_options.add_argument('--only-ports', default=[],
-                              type=lambda s:[int(i) for i in s.split(",")],
-                              help=("Comma-seperated list of exclusive ports to "
-                              "use (e.g. '80,8080')"))
     http_options.add_argument('--prepend-https', default=False, action='store_true',
                               help='Prepend http:\\\\ and https:\\\\ to URLs without either')
     http_options.add_argument('--vhost-name', default=None,metavar='hostname', help='Hostname to use in Host header (headless + single mode only)')
@@ -606,10 +602,15 @@ if __name__ == "__main__":
     print 'Finished in {0} seconds'.format(time.time() - start_time)
 
     if not cli_parsed.no_prompt:
-        open_file = open_file_input(cli_parsed)
-        if open_file:
-            files = glob.glob(os.path.join(cli_parsed.d, '*report.html'))
-            for f in files:
-                webbrowser.open(f)
-                sys.exit()
+        try:
+            open_file = open_file_input(cli_parsed)
+            if open_file:
+                files = glob.glob(os.path.join(cli_parsed.d, '*report.html'))
+                for f in files:
+                    webbrowser.open(f)
+                    sys.exit()
+            sys.exit()
+        except IOError:
+            print 'Good by'
         sys.exit()
+    sys.exit()
