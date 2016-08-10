@@ -35,7 +35,7 @@ class Ipsconv:
                     return l
 
     def __isip(self, line):
-        if re.match(r'(^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})*)', line, re.I):
+        if re.match(r'(^[\s]*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})*)', line, re.I):
            return True
         else:
            return False
@@ -48,25 +48,29 @@ class Ipsconv:
             l = line[0:-1].rstrip()
             if l != "":
                 if self.__isip(l):
-                    if re.match(r'(^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/\d{1,2}$)', l, re.I):
+                    if re.match(r'(^[\s]*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/\d{1,2}$)', l, re.I):
                         ips = self.__getrange(l, 1)
                         for each in ips:
                             ip = '%s\n' % each
                             self.__fileout.write(ip)
 
-                    if re.match(r'(^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})([\s]*-[\s]*)(\d{1,3}$))', l, re.I):
+                    if re.match(r'(^[\s]*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})([\s]*-[\s]*)(\d{1,3}$))', l, re.I):
                         ips = self.__getrange(l, 2)
                         for each in ips:
                             ip = '%s\n' % each
                             self.__fileout.write(ip)
 
-                    if re.match(r'(^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})'
+                    if re.match(r'(^[\s]*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})'
                                 r'([\s]*-[\s]*)'
                                 r'(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3}))', l, re.I):
                         ips = self.__getrange(l, 3)
                         for each in ips:
                             ip = '%s\n' % each
                             self.__fileout.write(ip)
+
+                    if re.match(r'(^[\s]*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$)', l, re.I):
+                        ip = '%s\n' % each
+                        self.__fileout.write(ip)
 
     def __getrange(self, ipblock, mode):
 
@@ -76,6 +80,8 @@ class Ipsconv:
         if mode == 1:
             ips.append(ipblock[0:ipblock.find('/')])
             ipaddress = ipblock[0:ipblock.find('/')]
+            if ' ' in ipaddress:
+                ipaddress = ipaddress.replace(" ", "")
             ipcomp = self.__splitip(ipaddress)
             hosts = 2 ** (32 - int(ipblock[ipblock.find('/')+1:]))
 
@@ -93,9 +99,9 @@ class Ipsconv:
         elif mode == 2:
             ipcomponents = ipblock.split('-')
             if " " in ipcomponents[0]:
-                ipcomponents[0].replace(" ", "")
+                ipcomponents[0] = ipcomponents[0].replace(" ", "")
             if " " in ipcomponents[1]:
-                ipcomponents[1].replace(" ", "")
+                ipcomponents[1] = ipcomponents[1].replace(" ", "")
             ipcomp = self.__splitip(ipcomponents[0])
             ips.append(ipcomponents[0])
             hosts = int(ipcomponents[1])
@@ -107,6 +113,10 @@ class Ipsconv:
 
         elif mode == 3:
             ipcomponents = ipblock.split('-')
+            if " " in ipcomponents[0]:
+                ipcomponents[0] = ipcomponents[0].replace(" ", "")
+            if " " in ipcomponents[1]:
+                ipcomponents[1] = ipcomponents[1].replace(" ", "")
             ipleft = self.__splitip(ipcomponents[0])
             ipright = self.__splitip(ipcomponents[1])
             ips.append(ipcomponents[0])
@@ -128,7 +138,7 @@ class Ipsconv:
 
     def __splitip(self, ip):
         if " " in ip:
-            ip.replace(" ", "")
+            ip = ip.replace(" ", "")
         comp = ip.split('.')
         ipcomp = []
         for x in comp:
