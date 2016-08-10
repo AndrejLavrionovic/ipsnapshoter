@@ -69,7 +69,9 @@ class Ipsconv:
                             self.__fileout.write(ip)
 
                     if re.match(r'(^[\s]*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$)', l, re.I):
-                        ip = '%s\n' % each
+                        if " " in l:
+                            l = l.replace(" ", "")
+                        ip = '%s\n' % l
                         self.__fileout.write(ip)
 
     def __getrange(self, ipblock, mode):
@@ -86,13 +88,19 @@ class Ipsconv:
             hosts = 2 ** (32 - int(ipblock[ipblock.find('/')+1:]))
 
             while i < hosts:
-                ipcomp[3] += 1
                 if ipcomp[3] == 255:
-                    ipcomp[2] += 1
+                    ipcomp[3] = 0
                     if ipcomp[2] == 255:
-                        ipcomp[1] += 1
+                        ipcomp[2] = 0
                         if ipcomp[1] == 255:
+                            ipcomp[1] = 0
                             ipcomp[0] += 1
+                        else:
+                            ipcomp[1] += 1
+                    else:
+                        ipcomp[2] += 1 
+                else:
+                    ipcomp[3] += 1
                 ip = '%d.%d.%d.%d' % (ipcomp[0], ipcomp[1], ipcomp[2], ipcomp[3])
                 ips.append(ip)
                 i += 1
@@ -123,13 +131,19 @@ class Ipsconv:
             hosts = (((ipright[0] - ipleft[0]) * 256 ** 3) + ((ipright[1] - ipleft[1]) * 256 ** 2) +
                      ((ipright[2] - ipleft[2]) * 256) + (ipright[3] - ipleft[3]))
             while i <= hosts:
-                ipleft[3] += 1
                 if ipleft[3] == 255:
-                    ipleft[2] += 1
+                    ipleft[3] = 0
                     if ipleft[2] == 255:
-                        ipleft[1] += 1
+                        ipleft[2] = 0
                         if ipleft[1] == 255:
+                            ipleft[1] = 0
                             ipleft[0] += 1
+                        else:
+                            ipleft[1] += 1
+                    else:
+                        ipleft[2] += 1 
+                else:
+                    ipleft[3] += 1
                 ip = '%d.%d.%d.%d' % (ipleft[0], ipleft[1], ipleft[2], ipleft[3])
                 ips.append(ip)
                 i += 1
