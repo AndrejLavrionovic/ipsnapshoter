@@ -12,6 +12,7 @@ class fout:
   # class instances
   __pathinstance = fp.fp()
   __fls = f('ips.txt')
+  __resdirname = strftime('%Y%j%H%M%S', gmtime())
   
   def __init__(self, ips_bunch=500):
     self.__ips_bunch = ips_bunch
@@ -76,6 +77,7 @@ class fout:
         if state == 'open':
           counter += 1
     i = 0
+    bunch = 1
     source=os.path.join(self.__pathinstance.getfp(), self.__fls.getfout())
     self.__fls.setoutm(7)  # set file mode as 'w' for write
     for host in root.iter('host'):
@@ -100,7 +102,8 @@ class fout:
           i += 1
           # scan out file when its ready
           if (((i%self.__ips_bunch) == 0 and i != 0) or i == counter):
-            self.__scan(outf)
+            self.__scan(outf, self.__resdirname, bunch)
+            bunch += 1
             os.chdir(self.__pathinstance.getcp())
 
   def __opensourcefile(self):
@@ -118,6 +121,7 @@ class fout:
   def __runscan(self, infile, ipoutnumber, ports, ips_bunch):
     # create outfiles and scann
     i=0
+    bunch = 1
     source=os.path.join(self.__pathinstance.getfp(), self.__fls.getfout())
     #move file pointer to the start of file
     infile.seek(0,0)
@@ -143,10 +147,11 @@ class fout:
 
         # scan out file when its ready
         if (((i%ips_bunch) == 0 and i != 0) or i == ipoutnumber):
-          self.__scan(outfile)
+          self.__scan(outfile, self.__resdirname, bunch)
+          bunch += 1
     os.chdir(self.__pathinstance.getcp())
 
-  def __scan(self, outfile):
+  def __scan(self, outfile, resdirn, bunch):
     print '3) ===> Preparation for scanning outputfile'
     #execute outputfile scan
     # Scann out.txt file using EyeWitness
@@ -155,7 +160,10 @@ class fout:
       outfile.close()
       print '3.1)==> Output file is closed. Ready to scan.'
     outputfilepath = os.path.join(self.__pathinstance.getfp(), self.__fls.getfout())
-    resdirname = strftime('%Y%j%H%M%S', gmtime())
+    if bunch == 1:
+        resdirname = resdirn
+    if bunch > 1:
+        resdirname = '%s_%d' % (resdirn, bunch)
     resultdir = os.path.join(self.__pathinstance.getfp(), resdirname)
     eyewitness = os.path.join(self.__pathinstance.getcp(), 'EyeWitness', 'EyeWitness.py')
     #print '====> ' + eyewitness
@@ -166,4 +174,24 @@ class fout:
     eyewitnessprocess = subprocess.Popen(eyewitnessrun, shell=True)
     eyewitnessprocess.wait()
     print '3.3)==> Scanning is done.'
+
+  def runipconverter(self, sourcefile):
+
+    # Open infile instance
+    os.chdir(self.__pathinstance.getfp())
+    source = "/"+self.__fls.getfin()
+    self.__fls.setinm(7)
+    
+    filein = open(sourcefile, 'r')
+    fileout = open(self.__fls.getfin(), self.__fls.getinm())
+
+    fconv = Ipsconv(filein, fileout)
+    fconv.convert()
+    self.__resdirname = fconv.getheader()
+
+    filein.close()
+    fileout.close()
+
+    os.chdir(self.__pathinstance.getcp())
+
 
