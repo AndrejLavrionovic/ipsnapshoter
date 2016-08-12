@@ -86,19 +86,22 @@ class fout:
       ports = host.find('ports')  # searching for ports tag in host element
       for p in ports.iter('port'):  # searching for ports
         
-        if((i%self.__ips_bunch)==0 and i != counter):
-          if i == 0:
-            print '1) ===> Start'
-          #create outfile instance
-          os.chdir(self.__pathinstance.getfp())
-          if(os.path.isfile(source)):
-            os.remove(self.__fls.getfout())
-          outf=open(self.__fls.getfout(), self.__fls.getoutm())
-          print '2) ===> Output file is opend and ready for writing'
-        
         port = p.get('portid')
         state = p.find('state').get('state')
+
+        # ignore all closed ports
         if state == 'open':
+
+          if((i%self.__ips_bunch)==0 and i != counter):
+            if i == 0:
+              print '1) ===> Start'
+            #create outfile instance
+            os.chdir(self.__pathinstance.getfp())
+            if(os.path.isfile(source)):
+              os.remove(self.__fls.getfout())
+            outf=open(self.__fls.getfout(), self.__fls.getoutm())
+            print '2) ===> Output file is opend and ready for writing'
+
           outf.write(ip+':'+port+'\n')
           i += 1
           # scan out file when its ready
