@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import os
-import os.path
 import flmds
 
 class fl:

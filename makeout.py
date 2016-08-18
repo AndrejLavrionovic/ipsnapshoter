@@ -1,15 +1,8 @@
 #!/usr/bin/python
 
 import argparse
-import os.path
-import fp
-import subprocess
-import re
-from org.fls import *
-from org.ipp import *
+import sys
 from org.foutput import *
-from EyeWitness import EyeWitness
-from time import strftime, gmtime
 
 # Create cli parce
 def create_cli_parser():
@@ -25,29 +18,29 @@ def create_cli_parser():
     args=parser.parse_args()
     if args.p is not None:
         if ',' in args.p:
-            args.p=args.p.split(',')
+            args.p = args.p.split(',')
             for item in args.p:
                 if '-' in item:
-                    index=args.p.index(item)
                     s, e = item.split('-')
-                    start=int(s);end=int(e)
+                    start = int(s)
+                    end = int(e)
                     args.p.remove(item)
-                    if (start < end):
-                        while (start<=end):
+                    if start < end:
+                        while start <= end:
                             args.p.append(str(start))
-                            start+=1
+                            start += 1
                     else:
                         print '[-->] Error: range must begin from smoller to higher number'
                         sys.exit()
         else:
-            args.p=[args.p]            
+            args.p = [args.p]
         print args.p
     return args
     
 
 def runscanner(cli_parsed, ips_bunch=500):
     print '==> scan source file and convert it into outfile'
-    fo=fout()
+    fo = fout()
     if cli_parsed.c is not None:
         fo.runipconverter(cli_parsed.c)
     if cli_parsed.a is not None:
@@ -56,10 +49,9 @@ def runscanner(cli_parsed, ips_bunch=500):
         fo.runnmapconverter()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     cli_parsed=create_cli_parser()
     runscanner(cli_parsed)
-    #fscan(550, cli_parsed)
 
 # Testing
 fls=f()
