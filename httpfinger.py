@@ -4,9 +4,10 @@ import argparse
 import sys
 from org.foutput import *
 
+
 # Create cli parce
 def create_cli_parser():
-    parser=argparse.ArgumentParser(description="AltechScanner is a tool that\
+    parser = argparse.ArgumentParser(description="AltechScanner is a tool that\
     scann ip addresses and capture its screenshots")
     parser.add_argument('-p', default=None, help='list of ports separated by \',\'\
     with no white spaces. Ports include numbers only.')
@@ -15,7 +16,7 @@ def create_cli_parser():
     utility will run through all ip addresses with a bunch of specified ports.')
     parser.add_argument('-n', default=None, help='input File that contain list of ips blocks (CIDRs)\
     that will be converted into ips.txt and report file will be named as a header in the file.')
-    args=parser.parse_args()
+    args = parser.parse_args()
     if args.p is not None:
         if ',' in args.p:
             args.p = args.p.split(',')
@@ -38,23 +39,23 @@ def create_cli_parser():
     return args
     
 
-def runscanner(cli_parsed, ips_bunch=500):
+def runscanner(cliparsed, ips_bunch=500):
     print '==> scan source file and convert it into outfile'
     fo = fout()
     if cli_parsed.n is not None:
-        fo.runipconverter(cli_parsed.c)
+        fo.runipconverter(cliparsed.c)
     if cli_parsed.f is not None:
-        fo.runfileconverter(cli_parsed.p)
+        fo.runfileconverter(cliparsed.p)
     else:
         fo.runnmapconverter()
 
 
 if __name__ == "__main__":
-    cli_parsed=create_cli_parser()
+    cli_parsed = create_cli_parser()
     runscanner(cli_parsed)
 
 # Testing
-fls=f()
+fls = f()
 print fls.getfin() + " > " + fls.getinm() + "\n" + fls.getfout() + " > " + fls.getoutm()
 ps = fp.fp()
 ps.getps()
