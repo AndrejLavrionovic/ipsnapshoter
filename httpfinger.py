@@ -43,7 +43,7 @@ def runscanner(cliparsed, ips_bunch=500):
     print '==> scan source file and convert it into outfile'
     fo = fout()
     if cli_parsed.n is not None:
-        fo.runipconverter(cliparsed.c)
+        fo.runipconverter(cliparsed.n)
     if cli_parsed.f is not None:
         fo.runfileconverter(cliparsed.p)
     else:
