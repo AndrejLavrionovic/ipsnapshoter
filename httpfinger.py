@@ -10,10 +10,10 @@ def create_cli_parser():
     scann ip addresses and capture its screenshots")
     parser.add_argument('-p', default=None, help='list of ports separated by \',\'\
     with no white spaces. Ports include numbers only.')
-    parser.add_argument('-a', default=None, action='store_true', help='Output file contain all ip addresses.\
+    parser.add_argument('-f', default=None, action='store_true', help='Output file contain all ip addresses.\
     With no -p specified will run through all ips with bunch of default ports. If ports are specified\
     utility will run through all ip addresses with a bunch of specified ports.')
-    parser.add_argument('-c', default=None, help='input File that contain list of ips blocks (CIDRs)\
+    parser.add_argument('-n', default=None, help='input File that contain list of ips blocks (CIDRs)\
     that will be converted into ips.txt and report file will be named as a header in the file.')
     args=parser.parse_args()
     if args.p is not None:
@@ -41,9 +41,9 @@ def create_cli_parser():
 def runscanner(cli_parsed, ips_bunch=500):
     print '==> scan source file and convert it into outfile'
     fo = fout()
-    if cli_parsed.c is not None:
+    if cli_parsed.n is not None:
         fo.runipconverter(cli_parsed.c)
-    if cli_parsed.a is not None:
+    if cli_parsed.f is not None:
         fo.runfileconverter(cli_parsed.p)
     else:
         fo.runnmapconverter()
