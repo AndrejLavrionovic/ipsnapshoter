@@ -29,10 +29,12 @@ class fout:
     print self.__pathinstance.getcp()
     print self.__pathinstance.getfp()
 
-  # if -a flag is set up
-  def runfileconverter(self, ports):
+  # if -f flag is set up
+  def runfileconverter(self, ports, filein):
     print 'convert file into output file'
     # Set components to open files
+    if filein != "":
+      self.__fls.setfin(filein)
     self.__fls.setinm(1)
     self.__fls.setoutm(7)
 

@@ -11,7 +11,7 @@ def create_cli_parser():
     scann ip addresses and capture its screenshots")
     parser.add_argument('-p', default=None, help='list of ports separated by \',\'\
     with no white spaces. Ports include numbers only.')
-    parser.add_argument('-f', default=None, action='store_true', help='Output file contain all ip addresses.\
+    parser.add_argument('-f', default=None, help='Output file contain all ip addresses.\
     With no -p specified will run through all ips with bunch of default ports. If ports are specified\
     utility will run through all ip addresses with a bunch of specified ports.')
     parser.add_argument('-n', default=None, help='input File that contain list of ips blocks (CIDRs)\
@@ -45,7 +45,7 @@ def runscanner(cliparsed, ips_bunch=500):
     if cli_parsed.n is not None:
         fo.runipconverter(cliparsed.n)
     if cli_parsed.f is not None:
-        fo.runfileconverter(cliparsed.p)
+        fo.runfileconverter(cliparsed.p, cliparsed.f)
     else:
         fo.runnmapconverter()
 
