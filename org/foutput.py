@@ -171,7 +171,7 @@ class fout:
         resdirname = resdirn
     if bunch > 1:
         resdirname = '%s_%d' % (resdirn, bunch)
-    resultdir = os.path.join(self.__pathinstance.getfp(), resdirname)
+    resultdir = os.path.join(self.__pathinstance.getfp(), "report", resdirname)
     eyewitness = os.path.join(self.__pathinstance.getcp(), 'EyeWitness', 'EyeWitness.py')
     #print '====> ' + eyewitness
     eyewitnessrun = 'python ' + eyewitness + ' -f ' + outputfilepath + ' -d ' + resultdir + ' --web'
